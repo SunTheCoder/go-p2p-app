@@ -1,37 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# P2P File Sharing and Chat Application
+
+A peer-to-peer application built with Go and React that enables direct file sharing and messaging between connected peers.
+
+## Features
+
+- 🔗 Direct peer-to-peer connections
+- 📁 File sharing between peers
+- 💬 Real-time messaging
+- 📋 Easy peer address copying and connection
+- 🔄 Automatic peer discovery
+- 📱 Responsive web interface
+
+## Technology Stack
+
+### Backend
+- Go
+- libp2p (P2P networking)
+- Gorilla Mux (HTTP routing)
+- CORS support
+
+### Frontend
+- Next.js
+- React
+- Tailwind CSS
+- Real-time updates
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Go 1.20 or later
+- Node.js 18 or later
+- npm or yarn
+
+### Running the Backend
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd backend
+go mod download
+go run main.go
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The backend server will start on port 8080 by default. You can change this by setting the PORT environment variable.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Running the Frontend
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## Learn More
+The frontend development server will start on [http://localhost:3000](http://localhost:3000).
 
-To learn more about Next.js, take a look at the following resources:
+## Usage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Open the application in your browser
+2. Copy your Node Address to share with other peers
+3. Connect to other peers by pasting their Node Address
+4. Send messages and files to connected peers
+5. Download received files from the "Received Files" section
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Development
 
-## Deploy on Vercel
+- Backend API endpoints are in `backend/handlers/handlers.go`
+- P2P networking logic is in `backend/p2p/network.go`
+- Frontend components are in `frontend/src/components/`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# go-p2p-app
