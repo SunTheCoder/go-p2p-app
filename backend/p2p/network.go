@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"strings"
 	"sync"
 	"time"
 
@@ -24,10 +25,11 @@ const (
 )
 
 type FileInfo struct {
-	Name string
-	Size int64
-	From string
-	Data []byte // Add this to store the actual file data
+	Name     string
+	Size     int64
+	From     string
+	Data     []byte
+	Progress float64 `json:"progress,omitempty"`
 }
 
 type Network struct {
@@ -44,6 +46,22 @@ type Network struct {
 type Message struct {
 	From    string `json:"from"`
 	Content string `json:"content"`
+}
+
+type progressWriter struct {
+	written    int64
+	total      int64
+	onProgress func(float64)
+}
+
+func (pw *progressWriter) Write(p []byte) (int, error) {
+	n := len(p)
+	pw.written += int64(n)
+	if pw.total > 0 {
+		progress := float64(pw.written) / float64(pw.total) * 100
+		pw.onProgress(progress)
+	}
+	return n, nil
 }
 
 func NewNetwork() *Network {
@@ -113,6 +131,11 @@ func (n *Network) handleMessages() {
 		n.mutex.Lock()
 		n.messages = append(n.messages, message)
 		n.mutex.Unlock()
+
+		// If this is a progress update, don't store it in messages
+		if strings.HasPrefix(message.Content, "FILE_PROGRESS:") {
+			continue
+		}
 	}
 }
 
@@ -128,7 +151,18 @@ func (n *Network) handleFileStream(stream network.Stream) {
 
 	// Create buffer to store file
 	buf := new(bytes.Buffer)
-	if _, err := io.Copy(buf, stream); err != nil {
+
+	// Create a proxy reader to track progress
+	reader := io.TeeReader(stream, &progressWriter{
+		total: fileInfo.Size,
+		onProgress: func(progress float64) {
+			fileInfo.Progress = progress
+			// Broadcast progress update
+			n.BroadcastMessage(fmt.Sprintf("FILE_PROGRESS:%s:%f", fileInfo.Name, progress))
+		},
+	})
+
+	if _, err := io.Copy(buf, reader); err != nil {
 		return
 	}
 

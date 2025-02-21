@@ -3,14 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #111111;
+  --foreground: #ffffff;
+  --card-background: #1a1a1a;
+  --message-sent: #3b82f6;
+  --message-received: #262626;
+  --text-primary: #ededed;
+  --text-secondary: #9ca3af;
+  --input-background: #0a0a0a;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Keep the same dark theme colors */
   }
 }
 
